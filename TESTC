@@ -1,0 +1,31 @@
+#include "minishell.h"
+
+int main(int argc, char **argv, char **environ)
+{
+	pid_t	pid;
+	int fd;
+	char	*line;
+	char	**buf;
+	int i = 0;
+	int j = 0;
+	fd = open(argv[1], O_RDONLY);
+	while (get_next_line(fd, &line) == 1)
+	{
+		if ((buf = ft_strsplit_white(line)))
+		{
+				pid = fork();
+				if (!pid)
+				{
+					if (execve(buf[0], buf, environ) == -1)
+					{
+						printf("%s\n", strerror(errno));
+						exit(EXIT_FAILURE);
+					}
+				}
+				else
+					wait(0);
+		}
+		i++;
+	}
+	return (0);
+}
